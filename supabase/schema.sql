@@ -13,11 +13,12 @@ create table if not exists public.consultations (
 );
 alter table public.consultations enable row level security;
 revoke all on public.consultations from anon, authenticated;
+grant select, insert on public.consultations to service_role;
 create index if not exists consultations_ip_created_idx on public.consultations (ip_hash, created_at);
 create or replace function public.submit_consultation(
   p_request_id uuid, p_company text, p_name text, p_phone text, p_email text,
   p_service text, p_message text, p_ip_hash text
-) returns jsonb language plpgsql security definer set search_path = public as $$
+) returns jsonb language plpgsql security invoker set search_path = public as $$
 begin
   perform pg_advisory_xact_lock(hashtextextended(p_ip_hash,0));
   if exists(select 1 from consultations where id = p_request_id) then
