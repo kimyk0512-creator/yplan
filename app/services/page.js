@@ -1,0 +1,8 @@
+import { groups, services } from '../../lib/services.mjs';
+export const metadata = {title:'서비스 소개 | 와이플랜 Y-PLAN',description:'브랜드블로그부터 영상·홈페이지 제작, 비즈니스 컨설팅까지 와이플랜의 15개 서비스를 살펴보세요.'};
+export default function Services() {return <main className="inner-page">
+  <section className="inner-hero section-dark"><div className="breadcrumb"><a href="/">HOME</a><span>SERVICES</span></div><p className="eyebrow">A PLAN FOR EVERY TOUCHPOINT.</p><h1>브랜드가 필요한 순간,<br/><span>맞는 서비스로 연결합니다.</span></h1><div className="inner-hero-bottom"><p>마케팅부터 콘텐츠, 사업 컨설팅까지.<br/>서비스를 선택해 자세한 내용을 살펴보세요.</p><span>15 SERVICES / 5 FIELDS</span></div></section>
+  <div className="service-jump" aria-label="서비스 분야">{groups.map(group=><a key={group.id} href={'#'+group.id}>{group.name}</a>)}</div>
+  {groups.map((group,index)=><section id={group.id} key={group.id} className={'service-category '+(index%2?'section-dark':'section-light')}><div className="section-label"><span>0{index+1} — {group.en}</span><span>{group.name}</span></div><div className="category-heading"><h2>{group.name}</h2><p>{group.description}</p></div><div className="service-cards">{services.filter(service=>service.group===group.id).map(service=><a className="service-card" key={service.slug} href={'/services/'+service.slug}><p className="eyebrow">{service.en}</p><h3>{service.name}</h3><p>{service.description}</p><span className="card-link">서비스 자세히 보기</span></a>)}</div></section>)}
+  <section className="page-cta"><p className="eyebrow">LET’S FIND YOUR PLAN.</p><h2>무엇부터 시작할지,<br/>함께 찾아볼까요?</h2><p>브랜드의 현재 상황에 맞춰 필요한 서비스부터 상담합니다.</p><a className="button" href="/#contact">맞춤 서비스 상담하기</a></section>
+</main>;}
