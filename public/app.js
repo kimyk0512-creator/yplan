@@ -1,25 +1,12 @@
-const menuButton = document.querySelector('.menu-toggle');
-const mobileMenu = document.querySelector('#mobile-menu');
-menuButton.addEventListener('click', () => {
-  const expanded = menuButton.getAttribute('aria-expanded') === 'true';
-  menuButton.setAttribute('aria-expanded', String(!expanded));
-  menuButton.setAttribute('aria-label', expanded ? '메뉴 열기' : '메뉴 닫기');
-  mobileMenu.hidden = expanded;
-});
-mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
-  mobileMenu.hidden = true;
-  menuButton.setAttribute('aria-expanded', 'false');
-  menuButton.setAttribute('aria-label', '메뉴 열기');
-}));
-document.querySelectorAll('[data-service]').forEach(link => link.addEventListener('click', () => {
-  document.querySelector('#service-select').value = link.dataset.service;
-}));
-const privacy = document.querySelector('#privacy-dialog');
-document.querySelectorAll('.privacy-trigger').forEach(button => button.addEventListener('click', () => privacy.showModal()));
-document.querySelectorAll('.dialog-close,.dialog-close-bottom').forEach(button => button.addEventListener('click', () => privacy.close()));
-document.querySelector('#year').textContent = new Date().getFullYear();
+function initializePage(){
+const menuButton=document.querySelector('.menu-toggle');const mobileMenu=document.querySelector('#mobile-menu');
+if(menuButton&&!menuButton.dataset.initialized){menuButton.dataset.initialized='true';menuButton.addEventListener('click',()=>{const expanded=menuButton.getAttribute('aria-expanded')==='true';menuButton.setAttribute('aria-expanded',String(!expanded));menuButton.setAttribute('aria-label',expanded?'메뉴 열기':'메뉴 닫기');mobileMenu.hidden=expanded});mobileMenu.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>{mobileMenu.hidden=true;menuButton.setAttribute('aria-expanded','false');menuButton.setAttribute('aria-label','메뉴 열기')}));}
+const privacy=document.querySelector('#privacy-dialog');
+document.querySelectorAll('.privacy-trigger').forEach(button=>{if(button.dataset.initialized)return;button.dataset.initialized='true';button.addEventListener('click',()=>privacy.showModal())});
+document.querySelectorAll('.dialog-close,.dialog-close-bottom').forEach(button=>{if(button.dataset.initialized)return;button.dataset.initialized='true';button.addEventListener('click',()=>privacy.close())});
 const form = document.querySelector('#consultation-form');
-if (form) {
+if (form && !form.dataset.initialized) {
+form.dataset.initialized="true";
   const selectedService = new URLSearchParams(window.location.search).get('service');
   const select = document.querySelector('#service-select');
   if (selectedService && [...select.options].some(option => option.value === selectedService)) select.value = selectedService;
@@ -78,3 +65,8 @@ form.addEventListener('submit', async event => {
 });
 
 }
+
+}
+initializePage();
+window.addEventListener('yplan:route',initializePage);
+new MutationObserver(initializePage).observe(document.querySelector('#main-content'),{childList:true,subtree:true});
